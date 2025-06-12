@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Uncomponent</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--figma-color-text);
+      background: var(--figma-color-bg);
+      padding: 16px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .plugin-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--figma-color-text);
+      margin-bottom: 8px;
+    }
+
+    .plugin-description {
+      font-size: 11px;
+      color: var(--figma-color-text-secondary);
+      line-height: 1.3;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .selection-status {
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid var(--figma-color-border);
+      background: var(--figma-color-bg-secondary);
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .selection-status.valid {
+      background: var(--figma-color-bg-success);
+      border-color: var(--figma-color-border-success);
+      color: var(--figma-color-text-success);
+    }
+
+    .selection-status.invalid {
+      background: var(--figma-color-bg-warning);
+      border-color: var(--figma-color-border-warning);
+      color: var(--figma-color-text-warning);
+    }
+
+    .status-icon {
+      font-size: 16px;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .status-message {
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .button {
+      width: 100%;
+      height: 32px;
+      border: none;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .button:focus {
+      outline: 2px solid var(--figma-color-border-selected);
+      outline-offset: 1px;
+    }
+
+    .button-primary {
+      background: var(--figma-color-bg-brand);
+      color: var(--figma-color-text-onbrand);
+    }
+
+    .button-primary:hover:not(:disabled) {
+      background: var(--figma-color-bg-brand-hover);
+    }
+
+    .button-primary:disabled {
+      background: var(--figma-color-bg-disabled);
+      color: var(--figma-color-text-disabled);
+      cursor: not-allowed;
+    }
+
+    .button-secondary {
+      background: var(--figma-color-bg-secondary);
+      color: var(--figma-color-text);
+      border: 1px solid var(--figma-color-border);
+    }
+
+    .button-secondary:hover {
+      background: var(--figma-color-bg-hover);
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .result-message {
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      margin-bottom: 12px;
+      animation: slideIn 0.2s ease;
+    }
+
+    .result-success {
+      background: var(--figma-color-bg-success);
+      color: var(--figma-color-text-success);
+      border: 1px solid var(--figma-color-border-success);
+    }
+
+    .result-error {
+      background: var(--figma-color-bg-danger);
+      color: var(--figma-color-text-danger);
+      border: 1px solid var(--figma-color-border-danger);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .component-icon {
+      width: 16px;
+      height: 16px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="plugin-title">🔧 Uncomponent</div>
+    <div class="plugin-description">Select a component and click "Uncomponent" to convert it back to a regular frame with its contents.</div>
+  </div>
+
+  <div class="content">
+    <div id="selectionStatus" class="selection-status">
+      <span class="status-icon">📋</span>
+      <div class="status-message">Checking selection...</div>
+    </div>
+
+    <div id="resultMessage" style="display: none;"></div>
+
+    <div class="actions">
+      <button id="uncomponentBtn" class="button button-primary" disabled>
+        <svg class="component-icon" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M2 2h12v12H2V2zm1 1v10h10V3H3zm2 2h6v1H5V5zm0 2h6v1H5V7zm0 2h4v1H5V9z"/>
+        </svg>
+        Uncomponent
+      </button>
+      <button id="cancelBtn" class="button button-secondary">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    // UI Elements
+    const selectionStatus = document.getElementById('selectionStatus');
+    const statusMessage = selectionStatus.querySelector('.status-message');
+    const statusIcon = selectionStatus.querySelector('.status-icon');
+    const uncomponentBtn = document.getElementById('uncomponentBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const resultMessage = document.getElementById('resultMessage');
+
+    let hasValidSelection = false;
+
+    // Event listeners
+    uncomponentBtn.addEventListener('click', () => {
+      if (hasValidSelection) {
+        setLoading(true);
+        parent.postMessage({ pluginMessage: { type: 'uncomponent' } }, '*');
+      }
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*');
+    });
+
+    // Handle messages from plugin code
+    window.onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+      
+      switch (msg.type) {
+        case 'selection-status':
+          updateSelectionStatus(msg.hasValidSelection, msg.message, msg.count);
+          break;
+        case 'success':
+          showResult(msg.message, 'success');
+          setLoading(false);
+          break;
+        case 'error':
+          showResult(msg.message, 'error');
+          setLoading(false);
+          break;
+      }
+    };
+
+    function updateSelectionStatus(valid, message, count = 0) {
+      hasValidSelection = valid;
+      
+      selectionStatus.className = `selection-status ${valid ? 'valid' : 'invalid'}`;
+      statusIcon.textContent = valid ? '✅' : '⚠️';
+      statusMessage.textContent = message;
+      
+      uncomponentBtn.disabled = !valid;
+      
+      // Update button text with count if multiple items selected
+      if (valid && count > 1) {
+        uncomponentBtn.innerHTML = `
+          <svg class="component-icon" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M2 2h12v12H2V2zm1 1v10h10V3H3zm2 2h6v1H5V5zm0 2h6v1H5V7zm0 2h4v1H5V9z"/>
+          </svg>
+          Uncomponent (${count})
+        `;
+      } else {
+        uncomponentBtn.innerHTML = `
+          <svg class="component-icon" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M2 2h12v12H2V2zm1 1v10h10V3H3zm2 2h6v1H5V5zm0 2h6v1H5V7zm0 2h4v1H5V9z"/>
+          </svg>
+          Uncomponent
+        `;
+      }
+    }
+
+    function showResult(message, type) {
+      resultMessage.textContent = message;
+      resultMessage.className = `result-message result-${type}`;
+      resultMessage.style.display = 'block';
+      
+      // Hide after 3 seconds
+      setTimeout(() => {
+        resultMessage.style.display = 'none';
+      }, 3000);
+    }
+
+    function setLoading(loading) {
+      document.body.classList.toggle('loading', loading);
+      if (loading) {
+        uncomponentBtn.textContent = 'Processing...';
+      }
+    }
+
+    // Request initial selection check
+    parent.postMessage({ pluginMessage: { type: 'check-selection' } }, '*');
+  </script>
+</body>
+</html> 

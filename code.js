@@ -128,8 +128,16 @@ function uncomponentNode(node) {
   var originalName = node.name;
   
   // Create a frame to hold the uncomponented content
+  // Remove ALL existing (uncomponented) suffixes and add just one
+  var newName = originalName
+    .split('(uncomponented)')
+    .join('')
+    .replace(/\s+/g, ' ')
+    .trim();
+  newName = newName + ' (uncomponented)';
+  
   var newFrame = figma.createFrame();
-  newFrame.name = originalName + ' (uncomponented)';
+  newFrame.name = newName;
   newFrame.x = originalX;
   newFrame.y = originalY;
   

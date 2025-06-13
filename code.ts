@@ -127,10 +127,14 @@ function uncomponentNode(node: ComponentNode | InstanceNode) {
   const originalName = node.name;
   
   // Create a frame to hold the uncomponented content
-  let newName = originalName;
-  if (!/\(uncomponented\)$/i.test(originalName)) {
-    newName = `${originalName} (uncomponented)`;
-  }
+  // Remove ALL existing (uncomponented) suffixes and add just one
+  let newName = originalName
+    .split('(uncomponented)')
+    .join('')
+    .replace(/\s+/g, ' ')
+    .trim();
+  newName = `${newName} (uncomponented)`;
+  
   const newFrame = figma.createFrame();
   newFrame.name = newName;
   newFrame.x = originalX;

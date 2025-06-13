@@ -150,15 +150,15 @@
     }
 
     .result-success {
-      background: var(--figma-color-bg-success);
-      color: var(--figma-color-text-success);
-      border: 1px solid var(--figma-color-border-success);
+      background: #e6f9f0;
+      color: #177a4d;
+      border: 1px solid #3ecf8e;
     }
 
     .result-error {
-      background: var(--figma-color-bg-danger);
-      color: var(--figma-color-text-danger);
-      border: 1px solid var(--figma-color-border-danger);
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeeba;
     }
 
     @keyframes slideIn {
@@ -287,9 +287,25 @@
       resultMessage.className = `result-message result-${type}`;
       resultMessage.style.display = 'block';
       
-      // Hide after 3 seconds
+      // Hide selection status when showing result to prevent conflicting messages
+      selectionStatus.style.display = 'none';
+      
+      // Hide CTA button when showing success
+      if (type === 'success') {
+        uncomponentBtn.style.display = 'none';
+        // Add checked icon to success message
+        resultMessage.innerHTML = `<span style="margin-right: 8px;">✅</span>${message}`;
+      } else {
+        resultMessage.textContent = message;
+      }
+      
+      // Hide after 3 seconds and restore selection status
       setTimeout(() => {
         resultMessage.style.display = 'none';
+        selectionStatus.style.display = 'block';
+        uncomponentBtn.style.display = 'block'; // Show CTA button again
+        // Re-check selection after operation
+        parent.postMessage({ pluginMessage: { type: 'check-selection' } }, '*');
       }, 3000);
     }
 

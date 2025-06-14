@@ -1,144 +1,75 @@
 # 🔧 Uncomponent
 
-A Figma plugin that allows you to "uncomponent" components, converting them back to regular frames while preserving their content and layout properties.
+A Figma plugin that converts components back to regular frames while preserving all their content, layout, and styling properties.
 
-## ✨ Features
+## What does it do?
 
-- **Smart Selection Detection**: Automatically detects when you have components selected
-- **Batch Processing**: Uncomponent multiple components at once
-- **Property Preservation**: Maintains layout, styling, and positioning
-- **Real-time Feedback**: Live updates based on your current selection
-- **Clean UI**: Modern, Figma-native interface
+When you have a component in Figma that you want to "break" or convert back to a regular frame (perhaps for one-off customizations), Uncomponent does exactly that. It takes your selected component(s) and creates identical frames with all the same content, but without the component constraints.
 
-## 🚀 What It Does
+## Features
 
-When you select a component in Figma and click "Uncomponent", the plugin will:
+- ✅ **Convert components to frames** - Maintains all visual properties
+- ✅ **Preserve layout properties** - Auto-layout, padding, spacing all maintained  
+- ✅ **Batch processing** - Select multiple components and convert them all at once
+- ✅ **Smart naming** - Adds "(uncomponented)" suffix without duplicates
+- ✅ **Instance support** - Works with both master components and instances
+- ✅ **Component set support** - Handles component variants
 
-1. ✅ Remove the component wrapper
-2. ✅ Create a new frame with the same properties
-3. ✅ Move all child elements to the new frame
-4. ✅ Preserve layout modes (Auto Layout, constraints, etc.)
-5. ✅ Maintain styling (fills, strokes, effects, etc.)
-6. ✅ Keep the same position and naming
+## How to use in Figma
 
-## 📥 Installation
+### Step 1: Install the plugin
+1. Open Figma
+2. Go to **Plugins** → **Browse plugins in Community**
+3. Search for "Uncomponent"
+4. Click **Install**
 
-### Development Installation
+### Step 2: Select components
+1. In your Figma file, select one or more components you want to convert
+2. You can select:
+   - Master components
+   - Component instances  
+   - Component sets (variants)
 
-1. Clone or download this repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Build the plugin:
-   ```bash
-   npm run build
-   ```
-4. Open Figma Desktop
-5. Go to **Plugins** → **Development** → **Import plugin from manifest**
-6. Select the `manifest.json` file from this project
+### Step 3: Run the plugin
+1. Go to **Plugins** → **Uncomponent**
+2. The plugin will show how many components are selected
+3. Click the **"Uncomponent"** button
+4. Done! Your components are now regular frames
 
-### Production Installation
-*(Coming soon - will be available in the Figma Community)*
+## What gets preserved?
 
-## 🎯 How to Use
+When you uncomponent, the new frame will have:
+- ✅ All visual styling (fills, strokes, effects, opacity)
+- ✅ Size and position
+- ✅ Auto-layout properties (if any)
+- ✅ Padding and spacing
+- ✅ All child elements and their properties
+- ✅ Layer structure and hierarchy
 
-1. **Select Components**: Select one or more components in your Figma file
-2. **Open Plugin**: Go to **Plugins** → **Uncomponent**
-3. **Review Selection**: The plugin will show you how many components are selected
-4. **Uncomponent**: Click the "Uncomponent" button
-5. **Done!**: Your components are now regular frames with all content preserved
+## Example
 
-## 🔧 Supported Node Types
+**Before:** `Button Component`  
+**After:** `Button Component (uncomponented)` ← Now a regular frame
 
-- ✅ **Components** (`COMPONENT`)
-- ✅ **Component Instances** (`INSTANCE`)
-- ✅ **Component Sets** (`COMPONENT_SET`) - processes all variants
+If you uncomponent the same item multiple times, it won't add duplicate suffixes:
+`Button (uncomponented) (uncomponented)` → `Button (uncomponented)`
 
-## 💡 Use Cases
+## When to use this plugin
 
-- **Design System Cleanup**: Remove unnecessary component wrappers
-- **Legacy Component Migration**: Convert old components to new structures
-- **Rapid Prototyping**: Quickly break down components for experimentation
-- **Component Debugging**: Inspect the underlying structure of components
+- 🎨 **One-off customizations** - When you need to modify a component instance beyond what variants allow
+- 🔄 **Component cleanup** - Converting old components back to frames
+- 📋 **Design exploration** - Breaking components to experiment with different layouts
+- 🛠️ **Legacy file maintenance** - Simplifying complex component structures
 
-## 🛠 Development
+## Requirements
 
-### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
-- Figma Desktop app
+- Figma (desktop or web)
+- Components, instances, or component sets to convert
 
-### Scripts
-```bash
-# Install dependencies
-npm install
+## Support
 
-# Build the plugin
-npm run build
+Created by [Sepanta Pouya](https://sepantapouya.com)
 
-# Watch for changes during development
-npm run watch
-```
+## License
 
-### Project Structure
-```
-Uncomponent/
-├── manifest.json      # Plugin configuration
-├── code.ts           # Main plugin logic
-├── ui.html           # Plugin user interface
-├── package.json      # Node.js dependencies
-├── tsconfig.json     # TypeScript configuration
-└── README.md         # This file
-```
-
-## 🎨 UI/UX Features
-
-- **Figma Native Styling**: Uses Figma's design tokens for consistent appearance
-- **Dark/Light Mode Support**: Automatically adapts to Figma's theme
-- **Responsive Design**: Works well at different plugin sizes
-- **Accessibility**: Proper focus management and keyboard navigation
-- **Real-time Updates**: Status updates as you change selection
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**"No components selected"**
-- Make sure you have selected actual components, not just frames or other elements
-
-**"Component has no parent"**
-- This happens with top-level components. The plugin will still process them correctly.
-
-**"Operation failed"**
-- Try selecting fewer components at once
-- Ensure components aren't locked or have special constraints
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙋‍♀️ Support
-
-If you encounter any issues or have questions:
-- Open an issue on GitHub
-- Check the troubleshooting section above
-- Review Figma's plugin documentation
-
-## 🎉 Acknowledgments
-
-- Built with ❤️ for the Figma design community
-- Inspired by the need for better component management tools
-- Thanks to all beta testers and contributors
-
----
-
-**Made with ❤️ by Sepanta Pouya** | [Report Bug](../../issues) | [Request Feature](../../issues) 
+MIT License - see [LICENSE](LICENSE) file for details. 

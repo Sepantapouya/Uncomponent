@@ -1,10 +1,10 @@
 {
   "name": "Uncomponent",
-  "id": "sepi-uncomponent",
+  "id": "1515337681400263280",
   "api": "1.0.0",
   "main": "code.js",
   "ui": "ui.html",
-  "editorType": ["figma", "figjam"],
+  "editorType": ["figma"],
   "capabilities": [],
   "enableProposedApi": false,
   "documentAccess": "dynamic-page",
